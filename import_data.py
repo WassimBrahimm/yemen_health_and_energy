@@ -3,7 +3,7 @@ from os.path import join
 
 import pandas as pd
 
-from functions import haversine_distance
+from haversine import haversine
 
 base_path = '/Users/wassimbrahim/Desktop/yemeni_conflict_data'
 f_name = 'yemen_health_facilities.csv'
@@ -20,16 +20,27 @@ logging.info('File {0} imported successfully.'.format(f_name))
 
 result = pd.DataFrame()
 rows_list = []
-#  combine for every conflict's
+#  combine for every conflict: conflict date,
+# final data frame columns : FID (facility_id), CID (conflict_id), conflict_date, conflict_type, facility_type,
+# f_c_distance, Governorate,District,District_Pcode, GEO9_Type, HF_Code, Name_En, Type, Level,Functionality
 for index, facility in facilities_data.iterrows():
     for index_1, conflict in conflicts_data.iterrows():
-        row_result = {}
-        row_result['facility_id'] = facility['HF_Code']
-        row_result['conflict_id'] = conflict['conflict_id']
-        row_result['facility_latitude'] = facility['latitude']
-        row_result['facility_longitude'] = facility['longitude']
-        row_result['distance'] = haversine_distance(facility['latitude'], facility['longitude'],
-                                                    conflict['latitude'], conflict['longitude'])
-        rows_list.append(row_result)
+        merge_row = {}
+        merge_row['facility_id'] = facility['FID']
+        merge_row['Governorate'] = facility['Governorate']
+        merge_row['District'] = facility['District']
+        merge_row['District_Pcode'] = facility['District_Pcode']
+        merge_row['GEO9_Type'] = facility['GEO9_Type']
+        merge_row['HF_Code'] = facility['HF_Code']
+        merge_row['Name_En'] = facility['Name_En']
+        merge_row['Type'] = facility['Type']
+        merge_row['Level'] = facility['Level']
+        merge_row['Functionality'] = facility['Functionality']
+        merge_row['conflict_id'] = conflict['conflict_id']
+        #  add conflict details : type
+        merge_row['f_c_distance'] = haversine((facility['latitude'], facility['longitude']),
+                                              (conflict['latitude'], conflict['longitude']),
+                                              unit='km')
+        rows_list.append(merge_row)
 result = pd.DataFrame(rows_list)
 result.to_csv(join(base_path, 'test_me.csv'), sep=';',index=False)
