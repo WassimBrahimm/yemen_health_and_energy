@@ -40,6 +40,6 @@ CREATE OR REPLACE TABLE conflict_facility_fact AS (
            IFF(distance < 1, TRUE, FALSE)   AS distance_1_km,
            IFF(distance < 3, TRUE, FALSE)   AS distance_1_km,
            IFF(distance < 5, TRUE, FALSE)   AS distance_5_km,
-           IFF(distance < 10, TRUE, FALSE)  AS distance_10_km,
+           IFF(distance < 10, TRUE, FALSE)  AS distance_10_km
     FROM distance_time_calcoulator
     );
