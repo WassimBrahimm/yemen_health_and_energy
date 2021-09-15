@@ -1,5 +1,5 @@
 use database demo_db;
-CREATE OR REPLACE TABLE conflict_facility_fact_v3 AS (
+CREATE OR REPLACE TABLE conflict_facility_fact_version_2 AS (
     WITH distance_time_calcoulator AS
              (
                  select conflicts.conflict_id,
@@ -28,24 +28,7 @@ CREATE OR REPLACE TABLE conflict_facility_fact_v3 AS (
                                   conflicts.longitude,
                                   facilities.longitude,
                                   facilities.latitude)                   AS distance,
-                        date(CONCAT(year, '-', month_code, '-', day))    AS conflict_date,
-                        CASE
-                            WHEN
-                                SUB_EVENT_TYPE = 'Shelling/artillery/missile attack'
-                                THEN 'sama'
-                            WHEN
-                                SUB_EVENT_TYPE = 'Armed clash'
-                                THEN 'ar'
-                            WHEN
-                                SUB_EVENT_TYPE = 'Government regains territory'
-                                THEN 'grt'
-                            WHEN
-                                SUB_EVENT_TYPE = 'Non-state actor overtakes territory'
-                                THEN 'naot'
-                            WHEN
-                                SUB_EVENT_TYPE = 'Air/drone strike'
-                                THEN 'air'
-                            END                                          AS conflict_type
+                        date(CONCAT(year, '-', month_code, '-', day))    AS conflict_date
 
                  FROM raw_conflicts AS conflicts
                           join raw_facilities AS facilities
@@ -55,12 +38,6 @@ CREATE OR REPLACE TABLE conflict_facility_fact_v3 AS (
            facility_id,
            conflict_date,
            year,
-           distance,
-           conflict_type,
-           IFF(distance < 1, TRUE, FALSE)  AS distance_1_km,
-           IFF(distance < 3, TRUE, FALSE)  AS distance_3_km,
-           IFF(distance < 5, TRUE, FALSE)  AS distance_5_km,
-           IFF(distance < 10, TRUE, FALSE) AS distance_10_km
+           distance
     FROM distance_time_calcoulator
-    WHERE conflict_type IS not null
 )
