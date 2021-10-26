@@ -103,8 +103,8 @@ def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, labels=None, 
             plt.plot([0, 0], [-100, 100], color='grey', ls='--')
 
             # Label the axes, with the percentage of variance explained
-            plt.xlabel('PC{} ({}%)'.format(d1 + 1, round(100 * pca.explained_variance_ratio_[d1], 1)))
-            plt.ylabel('PC{} ({}%)'.format(d2 + 1, round(100 * pca.explained_variance_ratio_[d2], 1)))
+            plt.xlabel('PC{} ({}%)'.format(d1 + 1, round(200 * pca.explained_variance_ratio_[d1], 1)))
+            plt.ylabel('PC{} ({}%)'.format(d2 + 1, round(200 * pca.explained_variance_ratio_[d2], 1)))
 
             plt.title("Projection of points (on PC{} and PC{})".format(d1 + 1, d2 + 1))
             plt.show(block=False)
@@ -174,6 +174,7 @@ def display_parallel_coordinates(df, num_clusters):
         ax = plt.gca()
         for tick in ax.xaxis.get_major_ticks()[1::2]:
             tick.set_pad(20)
+    plt.show()
 
 
 def display_parallel_coordinates_centroids(df, num_clusters):
@@ -191,3 +192,4 @@ def display_parallel_coordinates_centroids(df, num_clusters):
     ax = plt.gca()
     for tick in ax.xaxis.get_major_ticks()[1::2]:
         tick.set_pad(20)
+    plt.show()

@@ -1,10 +1,16 @@
-create or replace table clean_cluster_facility_test AS
+create
+or replace table "DEMO_DB"."PUBLIC"."CLEAN_CLUSTER_FACILITY_TEST" AS
     (
-        SELECT on_grid_avl,
+        SELECT
+      FACILITY_ID,
+      on_grid_avl,
                IFF(URBAN = 'urban', TRUE, FALSE) AS urban,
                on_grid,
                solar_onl,
                diesel_onl,
+               SOLAR_INC,
+               EA,
+               DIESEL_inc,
                min_distance_airborne_2015,
                min_distance_airborne_2016,
                min_distance_ground_2015,
@@ -15,7 +21,7 @@ create or replace table clean_cluster_facility_test AS
                    when FACILITY_TYPE in ('major') THEN 3
                    ELSE NULL
                    END                           as FACILITY_TYPE_MODELLED
-        FROM raw_facilities_clustering
+        FROM "DEMO_DB"."PUBLIC"."RAW_FACILITIES_CLUSTERING"
         WHERE latitude IS NOT NULL
           AND FACILITY_TYPE_MODELLED In (1, 2, 3)
     );
