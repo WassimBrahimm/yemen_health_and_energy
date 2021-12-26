@@ -16,7 +16,7 @@ from functions.clustering_functions import plot_dendrogram, display_factorial_pl
     display_parallel_coordinates_centroids
 
 # todo define number of clusters:
-n_clusters = 7
+n_clusters = 15
 
 query = """
 SELECT
@@ -29,6 +29,7 @@ FACILITY_TYPE_MODELLED AS FACILITY_TYPE,
 ON_GRID_AVL,
 SOLAR_INC,
 URBAN,
+EA,
 ON_GRID,
 SOLAR_ONL,
 DIESEL_ONL
@@ -36,6 +37,21 @@ from DEMO_DB.PUBLIC.CLEAN_CLUSTER_FACILITY_TEST
 """
 cs.execute(query)
 data_set = cs.fetch_pandas_all()
+X1 = data_set[[
+    'FACILITY_ID',
+    'MIN_AIR_2015',
+    'MIN_AIR_2016',
+    'MIN_GROUND_2015',
+    'MIN_GROUND_2016',
+    'FACILITY_TYPE',
+    'ON_GRID_AVL',
+    'URBAN',
+    'EA',
+    'ON_GRID',
+    'SOLAR_ONL',
+    'SOLAR_INC',
+    'DIESEL_ONL'
+]]
 X = data_set[[
     'MIN_AIR_2015',
     'MIN_AIR_2016',
@@ -62,10 +78,13 @@ clusters = hiercluster.fit_predict(X_scaled)
 counts_per_cluster = (np.bincount(clusters))  # count of data points in each cluster
 
 # Add cluster number to the original data
-X_scaled_clustered = pd.DataFrame(X_scaled, columns=X.columns, index=X.index)
+X_scaled_clustered = pd.DataFrame(X1, columns=X1.columns, index=X1.index)
 X_scaled_clustered['cluster'] = clusters
 # export the data sets to csv file with cluster column
 X_scaled_clustered.to_csv('csv_export/clusters_' + str(n_clusters) + '.csv', index=False)
+
+
+
 # print(X_scaled_clustered.head())
 # todo analyse the clustering results
 
@@ -86,6 +105,7 @@ pca.fit(X_scaled)
 
 # Transfor the scaled data to the new PCA space
 X_reduced = pca.transform(X_scaled)
+print(X_reduced)
 display_factorial_planes(X_reduced, 2, pca, [(0, 1)], illustrative_var=clusters, alpha=0.9)
 # Add the cluster number to the original scaled data
 X_clustered = pd.DataFrame(X_scaled, index=X.index, columns=X.columns)

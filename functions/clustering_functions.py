@@ -70,12 +70,17 @@ def display_circles(pcs, n_comp, pca, axis_ranks, labels=None, label_rotation=0,
 def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, labels=None, alpha=1, illustrative_var=None):
     '''Display a scatter plot on a factorial plane, one for each factorial plane'''
 
+    font = {'family': 'serif',
+            'color': 'black',
+            'weight': 'bold',
+            'size': 12,
+            }
     # For each factorial plane
     for d1, d2 in axis_ranks:
         if d2 < n_comp:
 
             # Initialise the matplotlib figure
-            fig = plt.figure(figsize=(7, 6))
+            fig = plt.figure(figsize=(7.5, 7.5))
 
             # Display the points
             if illustrative_var is None:
@@ -84,6 +89,11 @@ def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, labels=None, 
                 illustrative_var = np.array(illustrative_var)
                 for value in np.unique(illustrative_var):
                     selected = np.where(illustrative_var == value)
+                    print('*' * 100)
+                    print(X_projected[selected, d2])
+                    print(value)
+                    print('*' * 100)
+
                     plt.scatter(X_projected[selected, d1], X_projected[selected, d2], alpha=alpha, label=value)
                 plt.legend()
 
@@ -91,7 +101,7 @@ def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, labels=None, 
             if labels is not None:
                 for i, (x, y) in enumerate(X_projected[:, [d1, d2]]):
                     plt.text(x, y, labels[i],
-                             fontsize='14', ha='center', va='center')
+                             fontdict=font, fontsize='8', ha='center', va='top')
 
                     # Define the limits of the chart
             boundary = np.max(np.abs(X_projected[:, [d1, d2]])) * 1.1
@@ -138,8 +148,10 @@ def plot_dendrogram(Z, names, figsize=(10, 25)):
     dendrogram(
         Z,
         labels=names,
-        orientation="left",
+        orientation="top",
     )
+    plt.axhline(y=40, color='black', linestyle='-')
+    plt.axhline(y=66, color='black', linestyle='--')
     plt.show()
 
 
